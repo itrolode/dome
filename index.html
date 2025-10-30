@@ -23,14 +23,14 @@
             hello people
         </h1>
         <h4>    since you have made the tremoulous choice to do this here are some things you might want to know: </h4>
-        <h5>    speed is all that counts </h5>
+        <h5>    accuracy? or speed </h5>
 
 
         <p> 
             this is an small quiz that times how fast you can answer a question. <br> <br>
 
             1. you are timed <br>
-            2. you are given room for error <br>
+            2. you are given lush room for error (sometimes)<br>
             3. it's called trash can. you can do this. <br>
         </p>
     </div>
@@ -113,7 +113,7 @@
             switch (sign) {
                 case '+' : answer = no1 + no2;
                 break;
-                case '-' : answer = Math.abs(no1 - no2);
+                case '-' : answer = no1 - no2;
                 break;
                 case '×' : answer = no1 * no2;
                 break;
@@ -124,8 +124,10 @@
             //allows correct to be accessed outside the function variable
             let correct;
 
+            //check accuracy
             //allow for the answer off by 10%
-            if (input > (answer * 1.1)|| input < (answer * 0.90)) {
+            let preciseness = ((answer - input) / answer) * 100;
+            if (Math.abs(preciseness)>10) {
 
                 document.getElementById("correctness").textContent = "wrong";
                 correct = false
@@ -144,7 +146,6 @@
             document.getElementById("youranswer").textContent = input;
 
             //return how off correct ans your answer was
-            let preciseness = ((answer - input) / answer) * 100;
             document.getElementById("preciseness").textContent = preciseness;
 
             //congratulate if right answer, berate if wrong
