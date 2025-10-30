@@ -1,0 +1,207 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        i am a title do me
+    </title>
+    <style>
+        #postQuestion {
+            display: none;
+        }
+        #question {
+            display:none;
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+    <div id ="info">
+        <h1>
+            hello people
+        </h1>
+        <h4>    since you have made the tremoulous choice to do this here are some things you might want to know: </h4>
+        <h5>    speed is all that counts </h5>
+
+
+        <p> 
+            this is an small quiz that times how fast you can answer a question. <br> <br>
+
+            1. you are timed <br>
+            2. you are given room for error <br>
+            3. it's called trash can. you can do this. <br>
+        </p>
+    </div>
+
+    <p>   
+        <!-- what am i doing
+        //have a start button -->
+        <button type="button" id="startButon">i am a buton. do me.</button>
+        
+        <!-- //make an answer box - only show onclick -->
+        <form id="question">
+            <label for="ans" id="mathQs"></label><br>
+            <input type="text" id="ans" name="mathQs"><br>
+        </form>
+        <!-- //process input -->
+        <!-- //if correct show time taken from start button to entry of answer. -->
+        
+        <span id="postQuestion">
+            you have gotten the answer <span id = "correctness"></span> <br>
+            the accurate answer is <span id = "correctans"></span> <br>
+            your answer <span id ="youranswer"></span>, was off by <span id = "preciseness"></span>% <br>
+            <span id = "c2"></span>
+            <span id = "comments"></span> <br>
+            you have taken <span id="time"></span> seconds on this question. (which is <span id = "minutes"></span> minutes!)
+        </span>
+    </p>
+
+
+
+
+    <script>
+
+        //to improve
+        //make variable questions - chance of random arithmetic or manually created qs bank
+        //clear the form after the question is answered. 
+        //make a new question show when the empty form is submitted again AND wipe the stats about the ans (if form needs to be empty
+        //on submission then, it allows users to type in a new answer and recheck. however it also ensures that they 
+
+        //returns a value between 0 and value inclusive
+        function random(value) {
+            let randomno = Math.floor(Math.random() * (value + 1));
+            return randomno;
+        }
+
+
+        //define it globally so total time can access it.
+        let startTime
+
+        // once button is pressed show qs and start timer and hide button
+        document.getElementById('startButon').addEventListener('click',function() {
+            document.getElementById("ans").value = "";
+            document.getElementById("mathQs").textContent = mathQs();
+            document.getElementById('question').style.display = 'block';
+            startTime = Date.now();
+            document.getElementById('startButon').style.display = 'none';
+            document.getElementById('info').style.display = 'none';
+
+        })
+
+        //global so answer function can find answer
+        let no1, no2, sign;
+
+        //make a function to generate mathQs
+        function mathQs() {
+            const signs = ["÷","×","+","-"];
+            let randomIndex = random(3);
+            sign = signs[randomIndex];
+
+            no1 = random(100);
+            no2 = random(100);
+            let math = no1 + " " + sign + " " + no2;
+            let mathQs = "what is " + math +  "?";
+            return mathQs;
+        }
+
+        //check answer of the maths question
+        function answerCheck(input) {
+            input = Math.abs(parseFloat(input));
+            let answer;
+            switch (sign) {
+                case '+' : answer = no1 + no2;
+                break;
+                case '-' : answer = Math.abs(no1 - no2);
+                break;
+                case '×' : answer = no1 * no2;
+                break;
+                case '÷' : answer = no1 / no2;
+                break;
+            }
+
+            //allows correct to be accessed outside the function variable
+            let correct;
+
+            //allow for the answer off by 10%
+            if (input > (answer * 1.1)|| input < (answer * 0.90)) {
+
+                document.getElementById("correctness").textContent = "wrong";
+                correct = false
+            }
+
+            else {
+                document.getElementById("correctness").textContent = "correct";
+                correct = true
+            }
+            
+            //displaying details regarding the answer to the user
+            //show the correct ans
+            document.getElementById("correctans").textContent = answer;
+
+            //show user answer
+            document.getElementById("youranswer").textContent = input;
+
+            //return how off correct ans your answer was
+            let preciseness = ((answer - input) / answer) * 100;
+            document.getElementById("preciseness").textContent = preciseness;
+
+            //congratulate if right answer, berate if wrong
+            let compliments = ["youu good girll/boy 🫳💆","high jobb!!🍄💊", "sick clutch 🥚","keep slayyy 💅💅✨","🗣️🔥","𝓯𝓻𝓮𝓪𝓴𝔂🔥"];
+            let insults = ["did you 🚮🧠","wow!! 🤏🧠","🥊💥👩 maybe, this will fix you up","💔💔💔","🫃💔"];
+
+            // set the text of the span whose id=comments, to a compliment or insult
+            if (correct) {
+                document.getElementById("comments").textContent = compliments[random((compliments.length - 1))]
+            }
+            else if (!correct) {
+                document.getElementById("comments").textContent = insults[random((insults.length - 1))]
+            }
+
+        }
+                
+        //first set, not reset every time form is submitted
+        let Submittedbefore = false;
+
+        // once form is submittion, calculate and display the time.
+        document.getElementById('question').addEventListener('submit', function(event) {
+
+                // stops page from reloading and from all variables being reset
+                event.preventDefault(); 
+            
+            //if enter is pressed for the first time, show stats, calc time, and set submitted to true.
+            if (!Submittedbefore) {
+
+                let endTime = Date.now();
+                let input = document.getElementById('ans').value;
+                answerCheck(input);
+                let totalTime = (endTime - startTime)/1000;
+                document.getElementById("minutes").textContent=(totalTime/60).toFixed(2);
+                document.getElementById("time").textContent=totalTime;
+                document.getElementById("postQuestion").style.display = 'block';
+                Submittedbefore = true;
+
+            }
+
+            //if enter is pressed again then:
+            //clear the input box, hide the post question data, generate a new maths qs, and start timer.
+            //set submitted before to false
+            else if (Submittedbefore) {
+                document.getElementById('ans').value = "";
+                document.getElementById('postQuestion').style.display = 'none';
+                document.getElementById("mathQs").textContent = mathQs();
+                startTime = Date.now();
+                Submittedbefore = false;
+                
+            }
+
+            
+        })
+
+
+    </script>
+
+</body>
+
+</html>
