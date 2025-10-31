@@ -108,7 +108,7 @@
 
         //check answer of the maths question
         function answerCheck(input) {
-            input = Math.abs(parseFloat(input));
+            input = parseFloat(input);
             let answer;
             switch (sign) {
                 case '+' : answer = no1 + no2;
